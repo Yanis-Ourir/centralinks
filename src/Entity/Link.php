@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Repository\LinkRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category
+#[ORM\Entity(repositoryClass: LinkRepository::class)]
+class Link
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,7 +16,7 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $url = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -27,22 +27,15 @@ class Category
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deletedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
-
     /**
-     * @var Collection<int, Link>
+     * @var Collection<int, Category>
      */
-    #[ORM\ManyToMany(targetEntity: Link::class, mappedBy: 'category')]
-    private Collection $links;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $banner = null;
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'links')]
+    private Collection $category;
 
     public function __construct()
     {
-        $this->links = new ArrayCollection();
+        $this->category = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,14 +43,14 @@ class Category
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUrl(): ?string
     {
-        return $this->name;
+        return $this->url;
     }
 
-    public function setName(string $name): static
+    public function setUrl(string $url): static
     {
-        $this->name = $name;
+        $this->url = $url;
 
         return $this;
     }
@@ -98,53 +91,26 @@ class Category
         return $this;
     }
 
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Link>
+     * @return Collection<int, Category>
      */
-    public function getLinks(): Collection
+    public function getCategory(): Collection
     {
-        return $this->links;
+        return $this->category;
     }
 
-    public function addLink(Link $link): static
+    public function addCategory(Category $category): static
     {
-        if (!$this->links->contains($link)) {
-            $this->links->add($link);
-            $link->addCategory($this);
+        if (!$this->category->contains($category)) {
+            $this->category->add($category);
         }
 
         return $this;
     }
 
-    public function removeLink(Link $link): static
+    public function removeCategory(Category $category): static
     {
-        if ($this->links->removeElement($link)) {
-            $link->removeCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function getBanner(): ?string
-    {
-        return $this->banner;
-    }
-
-    public function setBanner(?string $banner): static
-    {
-        $this->banner = $banner;
+        $this->category->removeElement($category);
 
         return $this;
     }
