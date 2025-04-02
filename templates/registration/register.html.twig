@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-lg mt-10">
+        <h1 class="text-3xl font-bold text-slate-800 text-center mb-6">Create an Account</h1>
+
+        {{ form_start(registrationForm, {'attr': {'class': 'space-y-4'}}) }}
+        
+            <div>
+                {{ form_label(registrationForm.pseudo, null, {'label_attr': {'class': 'block text-slate-700 font-medium'}}) }}
+                {{ form_widget(registrationForm.pseudo, {'attr': {'class': 'w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none'}}) }}
+                {{ form_errors(registrationForm.pseudo, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'block text-slate-700 font-medium'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none'}}) }}
+                {{ form_errors(registrationForm.email, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'block text-slate-700 font-medium'}}) }}
+                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none'}}) }}
+                {{ form_errors(registrationForm.plainPassword, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+            </div>
+
+            <div class="flex items-start">
+                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'mr-2'}}) }}
+                {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'text-slate-700'}}) }}
+                {{ form_errors(registrationForm.agreeTerms, {'attr': {'class': 'text-red-500 text-sm ml-2'}}) }}
+            </div>
+
+            <button type="submit" class="w-full bg-red-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Register
+            </button>
+
+            <div class="text-center mt-4">
+                <a href="{{ path('app_login') }}" class="text-blue-500 hover:underline">Already have an account? Log in</a>
+            </div>
+
+        {{ form_end(registrationForm) }}
+    </div>
+{% endblock %}
