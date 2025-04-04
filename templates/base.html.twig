@@ -12,10 +12,29 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
-         <h1 class="text-3xl font-bold underline">
-            Hello world!
-        </h1>
+    <body class="bg-[#161616]">
+         <nav class="flex justify-between items-center p-4 mx-24 mt-4 bg-gray-700 backdrop-blur-none rounded-full text-white">
+            <div>
+            <!-- Logo or Brand Name -->
+                {# <a href="{{ path('app_home') }}">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" />
+                </a> #}
+                <h1>Centralinks</h1>
+            </div>
+            <ul class="flex space-x-4">
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="">About</a></li>
+                <li><a href="">Contact</a></li>
+            </ul>
+            <div>
+                {% if app.user %}
+                    <a href="{{ path('app_logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}">Login</a>
+                    <a href="{{ path('app_register') }}">Sign up</a>
+                {% endif %}
+            </div>
+         </nav>
         {% block body %}{% endblock %}
     </body>
 </html>
