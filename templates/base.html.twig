@@ -13,28 +13,39 @@
         {% endblock %}
     </head>
     <body class="bg-[#161616]">
-         <nav class="flex justify-between items-center p-4 mx-24 mt-4 bg-gray-700 backdrop-blur-none rounded-full text-white">
-            <div>
-            <!-- Logo or Brand Name -->
-                {# <a href="{{ path('app_home') }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" />
-                </a> #}
-                <h1>Centralinks</h1>
-            </div>
-            <ul class="flex space-x-4">
-                <li><a href="{{ path('app_home') }}">Home</a></li>
-                <li><a href="">About</a></li>
-                <li><a href="">Contact</a></li>
-            </ul>
-            <div>
-                {% if app.user %}
-                    <a href="{{ path('app_logout') }}">Logout</a>
-                {% else %}
-                    <a href="{{ path('app_login') }}">Login</a>
-                    <a href="{{ path('app_register') }}">Sign up</a>
-                {% endif %}
-            </div>
-         </nav>
+         <nav class="flex justify-between items-center px-6 py-2 mx-auto mt-4 max-w-5xl 
+    bg-[#1e1e1e] border border-gray-700 shadow-md shadow-black/30 
+    backdrop-blur-md rounded-full text-white">
+    <!-- Logo -->
+    <div class="text-lg font-bold tracking-wide">
+        <a href="{{ path('app_home') }}">Centralinks</a>
+    </div>
+
+    <!-- Menu -->
+    <ul class="flex space-x-6 text-sm font-medium">
+        <li><a href="{{ path('app_home') }}" class="hover:text-yellow-400 transition">Home</a></li>
+        <li><a href="#" class="hover:text-yellow-400 transition">About</a></li>
+        <li><a href="#" class="hover:text-yellow-400 transition">Contact</a></li>
+    </ul>
+
+    <!-- Auth buttons -->
+    <div class="flex space-x-4 text-sm font-medium items-center">
+        {% if app.user %}
+            <a href="{{ path('app_logout') }}" class="hover:text-yellow-400 transition">Logout</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="hover:text-yellow-400 transition">Login</a>
+            <a href="{{ path('app_register') }}" class="bg-yellow-400 text-black px-4 py-1 rounded-full hover:bg-yellow-500 transition">
+                Sign up
+            </a>
+        {% endif %}
+    </div>
+</nav>
+
+
         {% block body %}{% endblock %}
+
+         <footer class="mt-24 text-center text-sm text-gray-600">
+        © {{ "now"|date("Y") }} Centralinks. Built with ❤️ in Symfony.
+    </footer>
     </body>
 </html>
