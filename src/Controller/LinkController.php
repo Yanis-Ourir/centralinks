@@ -46,7 +46,7 @@ final class LinkController extends AbstractController
             $entityManager->persist($link);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_link_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_link_show', ['id' => $link->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('link/new.html.twig', [
