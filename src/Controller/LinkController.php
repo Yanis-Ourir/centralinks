@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\CategoryRepository;
 
 #[Route('/link')]
 final class LinkController extends AbstractController
@@ -26,10 +27,22 @@ final class LinkController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $link = new Link();
-        $form = $this->createForm(LinkType::class, $link);
+        $user = $this->getUser();        
+        
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+    
+        $form = $this->createForm(LinkType::class, $link, [
+            'user' => $user,
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $link->setCreatedAt(new \DateTimeImmutable());
+            $link->setUpdatedAt(new \DateTimeImmutable());
+    
             $entityManager->persist($link);
             $entityManager->flush();
 

@@ -13,21 +13,18 @@ class LinkType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $options['user'];
         $builder
             ->add('url')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('updatedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('deletedAt', null, [
-                'widget' => 'single_text',
-            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
+                'query_builder' => function ($er) use ($user) {
+                    return $er->createQueryBuilder('c')
+                        ->where('c.owner = :owner')
+                        ->setParameter('owner', $user);
+                },
             ])
         ;
     }
@@ -36,6 +33,7 @@ class LinkType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Link::class,
+            'user' => null,
         ]);
     }
 }

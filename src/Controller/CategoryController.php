@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 #[Route('/category')]
 final class CategoryController extends AbstractController
 {
@@ -36,7 +37,7 @@ final class CategoryController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_feed', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('category/new.html.twig', [
@@ -46,10 +47,17 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_category_show', methods: ['GET'])]
-    public function show(Category $category): Response
+    public function show(Category $category, CategoryRepository $categoryRepository): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+        $categories = $categoryRepository->findBy(['owner' => $user]);
+
         return $this->render('category/show.html.twig', [
             'category' => $category,
+            'categories' => $categories,
         ]);
     }
 

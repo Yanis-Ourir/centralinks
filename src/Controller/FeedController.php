@@ -16,7 +16,7 @@ final class FeedController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-        $categories = $categoryRepository->findAll();
+        $categories = $categoryRepository->findBy(['owner' => $user]);
         
         return $this->render('feed/index.html.twig', [
             'controller_name' => 'FeedController',

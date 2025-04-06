@@ -3,42 +3,30 @@
 {% block title %}Category{% endblock %}
 
 {% block body %}
-    <h1>Category</h1>
+<div class="flex min-h-screen bg-[#161616] text-white">
+    {{ include('feed/_sidenav.html.twig') }}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ category.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ category.name }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ category.createdAt ? category.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>UpdatedAt</th>
-                <td>{{ category.updatedAt ? category.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>DeletedAt</th>
-                <td>{{ category.deletedAt ? category.deletedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Banner</th>
-                <td>{{ category.banner }}</td>
-            </tr>
-        </tbody>
-    </table>
+     <main class="flex-1 p-10">
+        <h1 class="text-3xl font-bold mb-8">{{category.name}} feed</h1>
 
-    <a href="{{ path('app_category_index') }}">back to list</a>
+        <div class="grid gap-6">
+            {% if category.links is not empty %}
+                {% for link in category.links %}
+                    <div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-6 shadow-md shadow-black/20 text-gray-300">
+                        <h2 class="text-xl font-semibold mb-2">{{ link.title }}</h2>
+                        <p>{{ link.description }}</p>
+                        <a href="{{ link.url }}" class="text-blue-500 hover:underline">Read more</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+            <div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-6 shadow-md shadow-black/20 text-gray-300">
+                <h2 class="text-xl font-semibold mb-2">Feed is empty</h2>
+                <p>Add a new link to gather your post ! </p>
+                <a href="{{ path('app_link_new') }}" class="text-blue-500 hover:underline">Add a new link</a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
 
-    <!-- GET LINK CATEGORY -->
-
-    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-
-    {{ include('category/_delete_form.html.twig') }}
 {% endblock %}
