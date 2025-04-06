@@ -12,7 +12,12 @@ final class FeedController extends AbstractController
     #[Route('/feed', name: 'app_feed')]
     public function index(CategoryRepository $categoryRepository): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
         $categories = $categoryRepository->findAll();
+        
         return $this->render('feed/index.html.twig', [
             'controller_name' => 'FeedController',
             'categories' => $categories,
