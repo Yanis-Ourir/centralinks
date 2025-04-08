@@ -11,13 +11,10 @@ class FormatApiTwitter implements FormatApiDataInterface
 
     public function ApiCall(string $apiLink): void
     {
-        dd($apiLink);
         $client = new Client();
-        $response = $client->request('GET', $apiLink, [
-            'header' => [
-                'Authorization' => 'Bearer ' + $_ENV('ACCESS_TOKEN_TWITTER'),
-                'client_id' => $_ENV('CLIENT_ID_TWITTER'),
-                'client_secret' => $_ENV('CLIENT_SECRET_TWITTER'),
+        $response = $client->request('GET', 'https://api.x.com/2/users/1324000847236419584/tweets?max_results=5&exclude=retweets,replies', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $_ENV['ACCESS_TOKEN_TWITTER'],
             ]
         ]);
         $statusCode = $response->getStatusCode();
@@ -28,55 +25,6 @@ class FormatApiTwitter implements FormatApiDataInterface
 
     public function format(array $data): array
     {
-     
-
-        // "data": [
-        //     {
-        //         "text": "lucina book https://t.co/d7cVubXSli",
-        //         "id": "1908907475069538317",
-        //         "edit_history_tweet_ids": [
-        //             "1908907475069538317"
-        //         ]
-        //     }
-        // ] JSON
-
-        $testData = json_encode([
-            'data' => [
-            [
-                'text' => 'lucina book https://t.co/d7cVubXSli',
-                'id' => '1908907475069538317',
-                'edit_history_tweet_ids' => [
-                '1908907475069538317'
-                ]
-            ],
-            [
-                'text' => 'another tweet',
-                'id' => '1908907475069538318',
-                'edit_history_tweet_ids' => [
-                '1908907475069538318'
-                ]
-            ]
-            ]
-        ]);
-
-        $jsonData = json_decode($testData, true);
-
-
-        return $this->getData($jsonData);
-    }
-
-    public function getData(array $data): array {
-        //     0 => array:3 [▼
-        //       "text" => "lucina book"
-        //       "url" => "https://x.com/RotomDocs/status/1908907475069538317/photo/1"
-        //       "id" => "1908907475069538317"
-        //     ]
-        //     1 => array:3 [▼
-        //       "text" => "another tweet"
-        //       "url" => "https://t.co/example"
-        //       "id" => "1908907475069538318"
-        //     ]
-
         $formattedData = [];
     
         foreach($data['data'] as $tweet) {
@@ -96,7 +44,8 @@ class FormatApiTwitter implements FormatApiDataInterface
             $formattedData[] = $formattedTweet;
         }
    
-        
+        dd($formattedData);
         return $formattedData;
     }
+
 }

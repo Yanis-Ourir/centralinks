@@ -22,12 +22,7 @@ final class FeedController extends AbstractController
         $posts = [];
         $links = $linkRepository->findAll();
         foreach ($links as $link) {
-            $posts[] = [
-                'title' => $link->getTitle(),
-                'url' => $link->getUrl(),
-                'createdAt' => $link->getCreatedAt(),
-                'updatedAt' => $link->getUpdatedAt(),
-            ];
+            $posts[] = $formatApi->ApiCall($link->getUrl());
         }
 
         dd($posts);
