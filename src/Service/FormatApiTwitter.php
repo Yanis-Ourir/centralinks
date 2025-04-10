@@ -9,7 +9,7 @@ class FormatApiTwitter implements FormatApiDataInterface
 {
 
 
-    public function ApiCall(string $apiLink): void
+    public function ApiCall(string $apiLink): array
     {
         $client = new Client();
         $response = $client->request('GET', 'https://api.x.com/2/users/1324000847236419584/tweets?max_results=5&exclude=retweets,replies', [
@@ -20,7 +20,7 @@ class FormatApiTwitter implements FormatApiDataInterface
         $statusCode = $response->getStatusCode();
         $body = $response->getBody();
         $json = json_decode($body, true);
-        $this->format($json);
+        return $this->format($json);
     }
 
     public function format(array $data): array
@@ -44,7 +44,7 @@ class FormatApiTwitter implements FormatApiDataInterface
             $formattedData[] = $formattedTweet;
         }
    
-        dd($formattedData);
+
         return $formattedData;
     }
 

@@ -8,10 +8,10 @@ use App\Repository\LinkRepository;
 class FormatApiReddit implements FormatApiDataInterface
 {
 
-    public function ApiCall(string $link)
+    public function ApiCall(string $apiLink): array
     {
         $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', $link, [
+        $response = $client->request('GET', $apiLink, [
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
             ]
@@ -19,7 +19,7 @@ class FormatApiReddit implements FormatApiDataInterface
         $statusCode = $response->getStatusCode();
         $body = $response->getBody();
         $json = json_decode($body, true);
-        dd($json);
+        return $this->format($json);
     }
 
     public function format(array $data): array
@@ -44,9 +44,11 @@ class FormatApiReddit implements FormatApiDataInterface
                 'selftext' => $post['selftext'] ?? '',
                 'subreddit' => $post['subreddit'] ?? '',
                 'thumbnail' => (isset($post['thumbnail']) && filter_var($post['thumbnail'], FILTER_VALIDATE_URL)) ? $post['thumbnail'] : null,
+                'flair' => $post['link_flair_text'] ?? null,
             ];
         }
 
+    
         return $formattedData;
     }
 }

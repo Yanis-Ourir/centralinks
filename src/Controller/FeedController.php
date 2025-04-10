@@ -6,8 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\CategoryRepository;
-use App\Repository\LinkRepository;
-use App\Service\FormatApiFactory;
+use App\Service\PostAggregator;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
@@ -15,22 +14,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class FeedController extends AbstractController
 {
     #[Route('/feed', name: 'app_feed')]
-    public function index(CategoryRepository $categoryRepository, FormatApiFactory $formatApi, LinkRepository $linkRepository): Response
+    public function index(CategoryRepository $categoryRepository, PostAggregator $postAggregator): Response
     {
         $user = $this->getUser();
         $categories = $categoryRepository->findBy(['owner' => $user]);
-        $posts = [];
-        $links = $linkRepository->findAll();
-        foreach ($links as $link) {
-            /**
-             * @var FormatApiDataInterface $factoryClass
-             */
-            $factoryClass = $formatApi->create($link->getApplicationName());
-            $posts[] = $factoryClass->ApiCall($link->getUrl());
-        }
+        $posts = $postAggregator->fetchAllPosts();
+  
 
-        
-        
         return $this->render('feed/index.html.twig', [
             'controller_name' => 'FeedController',
             'categories' => $categories,
