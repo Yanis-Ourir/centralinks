@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Service;
 
 use App\Entity\Link;
@@ -6,38 +7,44 @@ use App\Repository\LinkRepository;
 
 class FormatApiReddit implements FormatApiDataInterface
 {
-    private LinkRepository $linkRepository;
 
-    public function __construct(LinkRepository $linkRepository)
+    public function ApiCall(string $link)
     {
-        $this->linkRepository = $linkRepository;
-    }
-
-    public function ApiCall(string $link) {
         $client = new \GuzzleHttp\Client();
-        // $response = $client->get($link, [
-        //     'headers' => [
-        //         'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
-        //     ]
-        // ]);
-        // $data = json_decode($response->getBody(), true);
-        // return $this->format($data['data']['children'] ?? []);
+        $response = $client->request('GET', $link, [
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+            ]
+        ]);
+        $statusCode = $response->getStatusCode();
+        $body = $response->getBody();
+        $json = json_decode($body, true);
+        dd($json);
     }
 
     public function format(array $data): array
     {
         $formattedData = [];
 
-        foreach ($data as $item) {
-            if (isset($item['data'])) {
-                $link = new Link();
-                $link->setTitle($item['data']['title'] ?? '')
-                     ->setUrl($item['data']['url'] ?? '')
-                     ->setCreatedAt(new \DateTimeImmutable('@' . ($item['data']['created_utc'] ?? time())))
-                     ->setUpdatedAt(new \DateTimeImmutable('@' . ($item['data']['created_utc'] ?? time())));
+        if (!isset($data['data']['children'])) {
+            return $formattedData;
+        }
 
-                $formattedData[] = $link;
-            }
+        foreach ($data['data']['children'] as $child) {
+            $post = $child['data'];
+
+            $formattedData[] = [
+                'title' => $post['title'] ?? '',
+                'author' => $post['author'] ?? '',
+                'url' => $post['url'] ?? '',
+                'permalink' => 'https://www.reddit.com' . ($post['permalink'] ?? ''),
+                'created_utc' => date('Y-m-d H:i:s', $post['created_utc'] ?? 0),
+                'score' => $post['score'] ?? 0,
+                'num_comments' => $post['num_comments'] ?? 0,
+                'selftext' => $post['selftext'] ?? '',
+                'subreddit' => $post['subreddit'] ?? '',
+                'thumbnail' => (isset($post['thumbnail']) && filter_var($post['thumbnail'], FILTER_VALIDATE_URL)) ? $post['thumbnail'] : null,
+            ];
         }
 
         return $formattedData;

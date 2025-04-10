@@ -33,6 +33,9 @@ class Link
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'links')]
     private Collection $category;
 
+    #[ORM\Column(length: 255)]
+    private ?string $applicationName = null;
+
     public function __construct()
     {
         $this->category = new ArrayCollection();
@@ -111,6 +114,18 @@ class Link
     public function removeCategory(Category $category): static
     {
         $this->category->removeElement($category);
+
+        return $this;
+    }
+
+    public function getApplicationName(): ?string
+    {
+        return $this->applicationName;
+    }
+
+    public function setApplicationName(string $applicationName): static
+    {
+        $this->applicationName = $applicationName;
 
         return $this;
     }

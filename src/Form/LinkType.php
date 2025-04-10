@@ -16,6 +16,7 @@ class LinkType extends AbstractType
         $user = $options['user'];
         $builder
             ->add('url')
+            ->add('applicationName')
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
