@@ -10,21 +10,115 @@
         <h1 class="text-3xl font-bold mb-8">{{category.name}} feed</h1>
 
         <div class="grid gap-6">
-            {% if category.links is not empty %}
-                {% for link in category.links %}
-                    <div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-6 shadow-md shadow-black/20 text-gray-300">
-                        <h2 class="text-xl font-semibold mb-2">{{ link.title }}</h2>
-                        <p>{{ link.description }}</p>
-                        <a href="{{ link.url }}" class="text-blue-500 hover:underline">Read more</a>
-                    </div>
+            {% if posts is not empty %}
+                {% for post in posts %}
+                    {% if post.applicationName == 'reddit' %}
+                    <a href="{{ post.permalink }}" target="_blank" class="block transition-all duration-200 hover:transform hover:scale-[1.02] hover:shadow-lg hover:shadow-yellow-500/10 hover:border-yellow-500">
+                        <div class="bg-[#1e1e1e] border border-gray-700 hover:border-yellow-500 rounded-2xl p-6 shadow-md shadow-black/20">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h2 class="text-xl font-semibold text-gray-100 group-hover:text-yellow-500">{{ post.title }}</h2>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-sm text-gray-500">
+                                            Posted by u/{{ post.author }} in r/{{ post.subreddit }} • {{ post.created_utc|date('M d, Y') }} 
+                                        </span>
+                                        {% if post.flair %}
+                                            <span class="bg-yellow-900 text-yellow-300 text-xs font-medium px-2 py-1 rounded-xl h-fit ms-2">
+                                                {{ post.flair }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="flex items-center text-yellow-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                </div>
+                            </div>
+
+                            {% if post.thumbnail %}
+                                <div class="relative mb-4 rounded-xl overflow-hidden">
+                                    <img src="{{ post.thumbnail }}" alt="Post Image" class="w-full h-52 object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if post.selftext %}
+                                <p class="text-gray-300 text-sm">
+                                    {{ post.selftext | slice(0, 300) ~ (post.selftext|length > 300 ? '...' : '') }}
+                                </p>
+                            {% endif %}
+
+                            <div class="flex items-center justify-between mt-4 text-gray-400 text-sm border-t border-gray-800 pt-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        {{ post.score }}
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                        {{ post.num_comments }}
+                                    </span>
+                                </div>
+                                <span class="text-yellow-500 flex items-center gap-1 hover:underline">
+                                    View on Reddit
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    {% elseif post.applicationName == 'twitter' %}
+                    <a href="https://twitter.com/user/status/{{ post.id }}" target="_blank" class="block transition-all duration-200 hover:transform hover:scale-[1.02] hover:shadow-lg hover:shadow-yellow-500/10 hover:border-yellow-500">
+                        <div class="bg-[#1e1e1e] border border-gray-700 hover:border-yellow-500 rounded-2xl p-6 shadow-md shadow-black/20">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex gap-3">
+                                    <!-- Profile icon placeholder -->
+                                    <div class="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-md font-semibold text-white-100">@user<span class="text-gray-500 font-normal"> · Tweet ID: {{ post.id|slice(0, 8) }}</span></h2>
+                                        <p class="text-base text-gray-200 mt-1">
+                                            {{ post.text }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center text-yellow-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                </div>
+                            </div>
+                            
+                            {% if post.image %}
+                            <div class="mt-3 mb-4 rounded-xl overflow-hidden">
+                                <img src="{{ post.image }}" alt="Tweet Image" class="w-full max-h-80 object-cover">
+                            </div>
+                            {% endif %}
+                            
+                            <div class="flex items-center justify-between mt-4 text-gray-400 text-sm border-t border-gray-800 pt-4">
+                                <div class="flex items-center gap-5">
+                                    <span class="flex items-center gap-1 hover:text-yellow-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                    </span>
+                                    <span class="flex items-center gap-1 hover:text-yellow-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                    </span>
+                                    <span class="flex items-center gap-1 hover:text-yellow-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                                    </span>
+                                </div>
+                                <span class="text-yellow-500 flex items-center gap-1 hover:underline">
+                                    View on Twitter
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endif %}
                 {% endfor %}
-            {% else %}
-            <div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-6 shadow-md shadow-black/20 text-gray-300">
-                <h2 class="text-xl font-semibold mb-2">Feed is empty</h2>
-                <p>Add a new link to gather your post ! </p>
-                <a href="{{ path('app_link_new') }}" class="text-blue-500 hover:underline">Add a new link</a>
-            </div>
             {% endif %}
+
+        {% if posts is empty %}
+            <div class="bg-[#1e1e1e] border border-gray-700 rounded-2xl p-6 shadow-md shadow-black/20">
+                <h2 class="text-xl font-semibold text-gray-100">No posts available</h2>
+                <a href="{{ path('app_link_new') }}" class="text-yellow-500 hover:underline">Add a new link to {{category.name}}</a>
+            </div>
+        {% endif %}
         </div>
     </main>
 </div>

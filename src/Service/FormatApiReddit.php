@@ -45,6 +45,7 @@ class FormatApiReddit implements FormatApiDataInterface
                 'subreddit' => $post['subreddit'] ?? '',
                 'thumbnail' => (isset($post['thumbnail']) && filter_var($post['thumbnail'], FILTER_VALIDATE_URL)) ? $post['thumbnail'] : null,
                 'flair' => $post['link_flair_text'] ?? null,
+                'applicationName' => 'reddit',
             ];
         }
 

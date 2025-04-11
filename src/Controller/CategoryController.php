@@ -5,13 +5,15 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
+use App\Service\PostAggregator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
+#[IsGranted('ROLE_USER')]
 #[Route('/category')]
 final class CategoryController extends AbstractController
 {
@@ -47,17 +49,18 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_category_show', methods: ['GET'])]
-    public function show(Category $category, CategoryRepository $categoryRepository): Response
+    public function show(Category $category, CategoryRepository $categoryRepository, PostAggregator $postAggregator): Response
     {
         $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
         $categories = $categoryRepository->findBy(['owner' => $user]);
+      
+        $posts = $postAggregator->fetchCategoryPosts($category);
+        
 
         return $this->render('category/show.html.twig', [
             'category' => $category,
             'categories' => $categories,
+            'posts' => $posts,
         ]);
     }
 
