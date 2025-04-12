@@ -7,7 +7,7 @@
    
 
      <section class="flex flex-col items-center justify-center text-center max-w-3xl mx-auto mt-20">
-        <!-- Animated badge -->
+    
         <div class="relative rounded-full p-[1px] h-8 inline-flex overflow-hidden text-[14px]/6 text-gray-200 transition">
             <span class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#FFFF00_0%,transparent_50%,#FFFF00_100%)]"></span>
             <a target="_blank" class="inline-flex h-full px-3 py-1 w-full cursor-pointer items-center justify-center rounded-full bg-stone-900 backdrop-blur-3xl" href="https://www.linkedin.com/feed/update/urn:li:activity:7311254984879157248/">
@@ -16,13 +16,13 @@
             </a>
         </div>
 
-        <!-- Main Heading -->
+   
         <h2 class="text-5xl font-extrabold mt-10 text-yellow-300">Your Information, Your Way.</h2>
         <p class="mt-4 text-lg text-gray-400 max-w-xl">
             Centralinks is your custom feed manager. Get updates only from the sources you choose — Reddit, Twitter, Discord and more.
         </p>
 
-        <!-- CTA -->
+  
         <div class="mt-8">
             <a href="{{ path('app_feed') }}" class="px-6 py-3 text-black bg-yellow-400 hover:bg-yellow-500 rounded-xl font-semibold transition">
                 Get Started
@@ -30,19 +30,11 @@
         </div>
     </section>
 
-    <!-- Supported Platforms -->
-    <section class="mt-20 text-center">
-        <h3 class="text-2xl font-bold text-yellow-300">Gather information from</h3>
-        <div class="flex flex-wrap justify-center items-center mt-6 gap-6">
-            <img src="{{ asset('images/discord.png') }}" alt="Discord" class="w-20">
-            <img src="{{ asset('images/twitter.webp') }}" alt="Twitter" class="w-20">
-            <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-20">
-            <img src="{{ asset('images/reddit.webp') }}" alt="Reddit" class="w-20">
-        </div>
-    </section>
+   
+    {{ include('home/_carousel.html.twig') }}
 
-    <!-- How it works -->
-    <section class="mt-24 max-w-4xl mx-auto text-center">
+
+    <section class="my-24 max-w-4xl mx-auto text-center">
         <h3 class="text-2xl font-bold mb-6 text-yellow-300">How it works</h3>
         <div class="grid md:grid-cols-3 gap-8">
             <div class="bg-[#1a1a1d] p-6 rounded-2xl shadow-md">
