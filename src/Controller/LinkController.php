@@ -42,6 +42,15 @@ final class LinkController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $link->setCreatedAt(new \DateTimeImmutable());
             $link->setUpdatedAt(new \DateTimeImmutable());
+
+            $url = $link->getUrl();
+
+            if(!preg_match('/^https?:\/\/[^\s]+$/', $url)) {
+                $this->addFlash('error', 'Invalid URL format.');
+                return $this->redirectToRoute('app_link_new');
+            }
+
+            $link->getApplicationName() === 'reddit' ? $link->setUrl($link->getUrl() + '.json') : $link->setUrl($link->getUrl());
     
             $entityManager->persist($link);
             $entityManager->flush();

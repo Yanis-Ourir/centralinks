@@ -11,7 +11,7 @@ class FormatApiReddit implements FormatApiDataInterface
     public function ApiCall(string $apiLink): array
     {
         $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', 'https://www.reddit.com/r/EpicSeven.json', [
+        $response = $client->request('GET', $apiLink, [
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
             ]
@@ -51,7 +51,7 @@ class FormatApiReddit implements FormatApiDataInterface
             ];
         }
 
-        // dd($formattedData[1]['image']);
+    
     
         return $formattedData;
     }
