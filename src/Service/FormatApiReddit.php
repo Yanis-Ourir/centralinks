@@ -11,7 +11,7 @@ class FormatApiReddit implements FormatApiDataInterface
     public function ApiCall(string $apiLink): array
     {
         $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', $apiLink, [
+        $response = $client->request('GET', 'https://www.reddit.com/r/EpicSeven.json', [
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
             ]
@@ -44,11 +44,14 @@ class FormatApiReddit implements FormatApiDataInterface
                 'selftext' => $post['selftext'] ?? '',
                 'subreddit' => $post['subreddit'] ?? '',
                 'thumbnail' => (isset($post['thumbnail']) && filter_var($post['thumbnail'], FILTER_VALIDATE_URL)) ? $post['thumbnail'] : null,
+                'image' => (isset($post['preview']['images'][0]['source']['url']) && filter_var($post['preview']['images'][0]['source']['url'], FILTER_VALIDATE_URL)) ? $post['preview']['images'][0]['source']['url'] : null,
+                'video' => (isset($post['media']['reddit_video']['fallback_url']) && filter_var($post['media']['reddit_video']['fallback_url'], FILTER_VALIDATE_URL)) ? $post['media']['reddit_video']['fallback_url'] : null,
                 'flair' => $post['link_flair_text'] ?? null,
                 'applicationName' => 'reddit',
             ];
         }
 
+        // dd($formattedData[1]['image']);
     
         return $formattedData;
     }

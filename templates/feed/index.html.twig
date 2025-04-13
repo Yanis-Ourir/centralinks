@@ -14,7 +14,7 @@
         <div class="grid gap-6">
             {% for post in posts %}
                 {% if post.applicationName == 'reddit' %}
-                <a href="{{ post.permalink }}" target="_blank" class="block transition-all duration-200 hover:transform hover:scale-[1.02] hover:shadow-lg hover:shadow-yellow-500/10 hover:border-yellow-500">
+                <div class="block transition-all duration-200 hover:transform hover:shadow-lg hover:shadow-yellow-500/10 hover:border-yellow-500 hover:scale-[1.02]">
                     <div class="bg-[#1e1e1e] border border-gray-700 hover:border-yellow-500 rounded-2xl p-6 shadow-md shadow-black/20">
                         <div class="flex items-start justify-between mb-4">
                             <div>
@@ -37,9 +37,15 @@
 
                         {% if post.thumbnail %}
                             <div class="relative mb-4 rounded-xl overflow-hidden">
-                                <img src="{{ post.thumbnail }}" alt="Post Image" class="w-full h-52 object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
+                                <img src="{{post.thumbnail}}" alt="Post Image" class="">
                             </div>
+                        {% endif %}
+
+                        {% if post.video %}
+                            <video controls class="w-full h-52 object-cover rounded-xl">
+                                <source src="{{ post.video }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>                          
                         {% endif %}
 
                         {% if post.selftext %}
@@ -64,7 +70,8 @@
                             </span>
                         </div>
                     </div>
-                </a>
+                </div>
+                 
                 {% elseif post.applicationName == 'twitter' %}
                 <a href="https://twitter.com/user/status/{{ post.id }}" target="_blank" class="block transition-all duration-200 hover:transform hover:scale-[1.02] hover:shadow-lg hover:shadow-yellow-500/10 hover:border-yellow-500">
                     <div class="bg-[#1e1e1e] border border-gray-700 hover:border-yellow-500 rounded-2xl p-6 shadow-md shadow-black/20">
