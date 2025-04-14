@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\CategoryRepository;
 
 #[Route('/link')]
 final class LinkController extends AbstractController
@@ -50,7 +49,7 @@ final class LinkController extends AbstractController
                 return $this->redirectToRoute('app_link_new');
             }
 
-            $link->getApplicationName() === 'reddit' ? $link->setUrl($link->getUrl() + '.json') : $link->setUrl($link->getUrl());
+            $link->getApplicationName() === 'reddit' ? $link->setUrl($link->getUrl() . '.json') : $link->setUrl($link->getUrl());
     
             $entityManager->persist($link);
             $entityManager->flush();

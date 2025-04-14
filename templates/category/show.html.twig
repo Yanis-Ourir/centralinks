@@ -7,7 +7,16 @@
     {{ include('feed/_sidenav.html.twig') }}
 
      <main class="flex-1 p-10 ml-64">
-        <h1 class="text-3xl font-bold mb-8">{{category.name}} feed</h1>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <h1 class="text-3xl font-bold text-white">{{category.name}} feed</h1>
+            
+            <a href="{{ path('app_link_new') }}" class="flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-medium px-5 py-2.5 rounded-lg transition-all shadow-lg hover:shadow-yellow-500/20 transform hover:-translate-y-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                <span>Add Link to {{category.name}}</span>
+            </a>
+        </div>
 
         <div class="grid gap-6">
             {% if posts is not empty %}

@@ -25,15 +25,36 @@
             </div>
 
             <div>
-                {{ form_label(form.category, 'Categories', {'label_attr': {'class': 'block mb-1 text-sm font-medium text-gray-300'}}) }}
-                {{ form_widget(form.category, {
-                    'attr': {
-                        'class': 'w-full px-4 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400',
-                        'multiple': 'multiple'
-                    }
-                }) }}
-                {{ form_errors(form.category) }}
+    {{ form_label(form.category, 'Categories', {'label_attr': {'class': 'block mb-1 text-sm font-medium text-gray-300'}}) }}
+    <div class="relative">
+        {{ form_widget(form.category, {
+            'attr': {
+                'class': 'hidden', 
+                'data-choices': true
+            }
+        }) }}
+        
+        <div class="choices-container border border-gray-600 bg-[#2a2a2a] rounded-lg overflow-hidden">
+            <!-- Selected items display area -->
+            <div class="selected-items flex flex-wrap gap-2 p-3 min-h-[45px] empty:before:content-['Select_categories...'] empty:before:text-gray-400">
             </div>
+            
+            <!-- Divider -->
+            <div class="border-t border-gray-600"></div>
+            
+            <!-- Search box -->
+            <div class="p-2 border-b border-gray-600">
+                <input type="text" class="w-full px-3 py-2 bg-[#333333] border border-gray-700 rounded text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Search categories...">
+            </div>
+            
+            <!-- Options list -->
+            <div class="options-list max-h-48 overflow-y-auto py-1">
+                <!-- Options will be added dynamically by JS -->
+            </div>
+        </div>
+    </div>
+    {{ form_errors(form.category) }}
+</div>
 
             <!-- Submit Button -->
             <div>
@@ -47,3 +68,187 @@
     </div>
 </div>
 
+<style>
+    .choices-container .selected-item {
+        background-color: #facc15;
+        color: #111111;
+        border-radius: 9999px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .choices-container .remove-item {
+        cursor: pointer;
+    }
+
+    .choices-container .option-item {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .choices-container .option-item:hover {
+        background-color: #333333;
+    }
+
+    .choices-container .option-item.selected {
+        background-color: rgba(250, 204, 21, 0.15);
+    }
+    
+    .choices-container .option-item.selected:hover {
+        background-color: rgba(250, 204, 21, 0.25);
+    }
+    
+    .choices-container .no-results {
+        padding: 0.5rem 1rem;
+        color: #999;
+        font-style: italic;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const originalSelect = document.querySelector('[data-choices]');
+    const container = document.querySelector('.choices-container');
+    const selectedItemsContainer = container.querySelector('.selected-items');
+    const optionsList = container.querySelector('.options-list');
+    const searchInput = container.querySelector('input[type="text"]');
+    
+ 
+    function initCustomSelect() {
+       
+        originalSelect.style.display = 'none';
+        
+        const options = Array.from(originalSelect.options);
+  
+        renderOptions(options);
+        
+   
+        updateSelectedItems();
+        
+     
+        selectedItemsContainer.addEventListener('click', function(e) {
+            if (!e.target.closest('.remove-item')) {
+                toggleOptionsList();
+            }
+        });
+        
+      
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filterOptions(searchTerm);
+        });
+        
+      
+        document.addEventListener('click', function(e) {
+            if (!container.contains(e.target)) {
+                optionsList.parentElement.classList.remove('active');
+            }
+        });
+    }
+    
+ 
+    function toggleOptionsList() {
+        const isActive = optionsList.parentElement.classList.toggle('active');
+        if (isActive) {
+            searchInput.focus();
+        }
+    }
+    
+  
+    function renderOptions(options) {
+        optionsList.innerHTML = '';
+        
+        if (options.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'no-results';
+            noResults.textContent = 'No matching categories found';
+            optionsList.appendChild(noResults);
+            return;
+        }
+        
+        options.forEach(option => {
+            const optionElement = document.createElement('div');
+            optionElement.className = 'option-item';
+            if (option.selected) {
+                optionElement.classList.add('selected');
+            }
+            optionElement.textContent = option.textContent;
+            optionElement.dataset.value = option.value;
+            
+            optionElement.addEventListener('click', function() {
+           
+                option.selected = !option.selected;
+                
+     
+                this.classList.toggle('selected');
+                updateSelectedItems();
+                
+         
+                const event = new Event('change', { bubbles: true });
+                originalSelect.dispatchEvent(event);
+            });
+            
+            optionsList.appendChild(optionElement);
+        });
+    }
+    
+   
+    function filterOptions(searchTerm) {
+        const options = Array.from(originalSelect.options);
+        const filteredOptions = options.filter(option => 
+            option.textContent.toLowerCase().includes(searchTerm)
+        );
+        renderOptions(filteredOptions);
+    }
+    
+
+    function updateSelectedItems() {
+        selectedItemsContainer.innerHTML = '';
+        
+        const selectedOptions = Array.from(originalSelect.selectedOptions);
+        
+        selectedOptions.forEach(option => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'selected-item';
+            
+            const textSpan = document.createElement('span');
+            textSpan.textContent = option.textContent;
+            
+            const removeButton = document.createElement('span');
+            removeButton.className = 'remove-item';
+            removeButton.innerHTML = '&times;';
+            removeButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+             
+                option.selected = false;
+                
+         
+                updateSelectedItems();
+                const optionItem = optionsList.querySelector(`[data-value="${option.value}"]`);
+                if (optionItem) {
+                    optionItem.classList.remove('selected');
+                }
+                
+          
+                const event = new Event('change', { bubbles: true });
+                originalSelect.dispatchEvent(event);
+            });
+            
+            itemElement.appendChild(textSpan);
+            itemElement.appendChild(removeButton);
+            selectedItemsContainer.appendChild(itemElement);
+        });
+    }
+    
+
+    if (originalSelect) {
+        initCustomSelect();
+    }
+});
+</script>
