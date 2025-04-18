@@ -7,6 +7,7 @@ class FormatApiDiscord implements FormatApiDataInterface
 {
     public function ApiCall(string $apiLink): array {
         // Simulate an API call to Discord and return a sample response
+        // https://discord.com/oauth2/authorize?client_id=1362889488157769869
          $data = [
             [
                 'title' => 'Discord Message 1',
